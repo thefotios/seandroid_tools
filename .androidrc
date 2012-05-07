@@ -1,0 +1,23 @@
+DIR=$HOME/android
+SDK=$DIR/android_sdk
+VERSION=master
+
+# Set ccache stuff
+export USE_CCACHE=1
+export CCACHE_DIR=$DIR/.ccache
+
+export PREFIX=$DIR/seandroid-$VERSION
+
+# Set the path if it hasn't been set yet
+if [ -z "$ANDROID_SDK_HOME" ]; then 
+  PATH=$PATH:$DIR/bin:$PREFIX/out/host/linux-x86/bin:$SDK:$SDK/tools:$SDK/platform-tools; 
+  export PATH;
+fi
+
+# Set locations for emualtor
+export ANDROID_SDK_HOME=$DIR
+export ANDROID_KERNEL=$PREFIX/kernel/goldfish/arch/arm/boot/zImage
+
+export ANDROID_PRODUCT_OUT=$PREFIX/out/target/product/generic
+
+export EMULATOR_OPTIONS="-show-kernel -kernel $ANDROID_KERNEL -partition-size 500 -sysdir $ANDROID_PRODUCT_OUT"

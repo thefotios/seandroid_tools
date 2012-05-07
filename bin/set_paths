@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+pushd $PREFIX
+source build/envsetup.sh
+setpaths
+popd

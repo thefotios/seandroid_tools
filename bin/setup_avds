@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+pushd $DIR/APKs
+adb shell mount -o rw,remount -t yaffs2 /dev/block/mtdblock03 /system
+adb push su /system/xbin/su
+adb push busybox /system/xbin/busybox
+adb push openvpn /system/xbin/openvpn
+adb shell chmod 06755 /system
+adb shell chmod 06755 /system/xbin/su
+adb shell chmod 06755 /system/xbin/busybox
+adb shell chmod 06755 /system/xbin/openvpn
+adb shell restorecon /system/xbin/su
+adb shell restorecon /system/xbin/busybox
+adb shell restorecon /system/xbin/openvpn
+popd

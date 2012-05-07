@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# You need this to build AOSP 4.0.3 or CM9
+yum install make curl gnupg git bison unzip zip flex gperf
+yum install gcc-c++ libstdc++-devel
+yum install glibc-devel.i686 zlib-devel.i686 ncurses-devel.i686
+yum install libX11-devel.i686 mesa-libGL-devel.i686
+
+# CM9 now builds a kernel during the Android build, so you will also need this
+yum install glibc-devel.x86_64 glibc-devel.i686
+yum install ncurses-devel.x86_64
+
+
+# You need this to build CM7
+yum install readline-devel.i686
+
+# Not required, but helpful
+yum install schedtool 
