@@ -8,6 +8,7 @@ function usage(){
 [[ $# -eq 0 ]] && usage
 
 target=$1
+logfile="${PWD}/out.log"
 
 # Get the environment setup
 pushd $PREFIX
@@ -16,8 +17,8 @@ setpaths
 lunch full-eng
 
 # Keep make options consistant across builds
-make_opts="-j4"
-log=" 2>&1 | tee out.log"
+make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
+log=" 2>&1 | tee $logfile"
 function my_make(){
   cmd="time make ${make_opts}"
   cmd+=" ${@} $log"
@@ -27,17 +28,17 @@ function my_make(){
 # Make depending on target
 case $target in
   kernel)
-    my_make
+    my_make droid
     ;;
   selinux) 
     my_make ARCH=arm goldfish_armv7_defconfig
     my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
     ;;
   userspace)
-    my_make CFLAGS+='-pthread' HAVE_SELINUX=true LOCAL_LDLIBS+=-lX11
+    my_make HAVE_SELINUX=true
     ;;
   *)
-    usage
+    my_make $target
     ;;
 esac
 
