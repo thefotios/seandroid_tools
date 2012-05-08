@@ -23,7 +23,8 @@ function my_make(){
   eval $cmd 
 }
 
-make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
+#make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
+make_opts="LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
 # Make depending on target
 case $target in
   kernel)
@@ -31,14 +32,16 @@ case $target in
     ;;
   selinux)
     pushd $PREFIX/kernel/goldfish
-    OPTS="ARCH=arm"
-    my_make $OPTS goldfish_armv7_defconfig
-    OPTS="${OPTS} CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-"
-    my_make $OPTS
+    my_make ARCH=arm goldfish_armv7_defconfig
+    my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
     popd
     ;;
   userspace)
-    my_make HAVE_SELINUX=true
+    opts="HAVE_SELINUX=true $make_opts"
+    for t in aapt libfst ""
+    do
+      my_make $opts $t
+    done
     ;;
   *)
     my_make $target
