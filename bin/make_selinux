@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set_paths
-MAKE_OPTS='ARCH=arm'
-pushd $PREFIX/kernel/goldfish
-nice make $MAKE_OPTS goldfish_armv7_defconfig
-time nice make $MAKE_OPTS CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-popd

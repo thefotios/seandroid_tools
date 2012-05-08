@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set_paths
-pushd $PREFIX
-source build/envsetup.sh
-lunch full-eng
-time make CFLAGS+='-pthread' HAVE_SELINUX=true LOCAL_LDLIBS+=-lX11
-popd

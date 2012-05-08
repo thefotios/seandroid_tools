@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+function usage(){
+  echo "Usage: $0 [kernel|selinux|userspace]"
+  exit
+}
+
+[[ $# -eq 0 ]] && usage
+
+target=$1
+
+# Get the environment setup
+pushd $PREFIX
+source build/envsetup.sh
+setpaths
+lunch full-eng
+
+# Keep make options consistant across builds
+make_opts="-j4"
+log=" 2>&1 | tee out.log"
+function my_make(){
+  cmd="time make ${make_opts}"
+  cmd+=" ${@} $log"
+  eval $cmd 
+}
+
+# Make depending on target
+case $target in
+  kernel)
+    my_make
+    ;;
+  selinux) 
+    my_make ARCH=arm goldfish_armv7_defconfig
+    my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+    ;;
+  userspace)
+    my_make CFLAGS+='-pthread' HAVE_SELINUX=true LOCAL_LDLIBS+=-lX11
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+popd
