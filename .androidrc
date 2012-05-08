@@ -3,13 +3,12 @@
 # Set DIR to this directory
 DIR=$HOME/android
 SDK=$DIR/android_sdk
-VERSION=master
 
 # Set ccache stuff
 export USE_CCACHE=1
 export CCACHE_DIR=$DIR/.ccache
 
-export PREFIX=$DIR/seandroid-$VERSION
+export PREFIX=$DIR/seandroid-current
 
 # Set the path if it hasn't been set yet
 if [ -z "$ANDROID_SDK_HOME" ]; then 
