@@ -17,22 +17,25 @@ setpaths
 lunch full-eng
 
 # Keep make options consistant across builds
-make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
 log=" 2>&1 | tee $logfile"
 function my_make(){
-  cmd="time make ${make_opts}"
-  cmd+=" ${@} $log"
+  cmd="time make ${@} $log"
   eval $cmd 
 }
 
+make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
 # Make depending on target
 case $target in
   kernel)
     my_make droid
     ;;
-  selinux) 
-    my_make ARCH=arm goldfish_armv7_defconfig
-    my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+  selinux)
+    pushd $PREFIX/kernel/goldfish
+    OPTS="ARCH=arm"
+    my_make $OPTS goldfish_armv7_defconfig
+    OPTS="${OPTS} CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-"
+    my_make $OPTS
+    popd
     ;;
   userspace)
     my_make HAVE_SELINUX=true
