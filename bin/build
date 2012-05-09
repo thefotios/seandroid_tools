@@ -46,7 +46,10 @@ function my_build(){
     # Update the policy and systemimage
     policy)
       my_build sepolicy 
-      build snod
+      # There must be a way to reload the policy manually
+      # http://selinuxproject.org/page/SEAndroid#SE_Android_Policy
+      # Until then we have to rebuild droid
+      my_build droid
       ;;
     *)
       my_make -j4 HAVE_SELINUX=true $target
@@ -64,7 +67,33 @@ function notify(){
   exit 
 }
 
+function my_renice(){
+  newnice=10
+  pid=$1
+
+  # Return if pid not found
+  if [ -z $pid ]; then return; fi
+
+  # Renice pid right away in case we spawn more children
+  renice $newnice $pid
+
+  # Find children pids
+  children=$(pgrep -d ' ' -P $pid)
+
+  # Loop through children
+  for i in $children; do my_renice $i; done
+}
+
 target=$1
+
+case "$target" in
+  "renice")
+    name=$(which build)
+    echo "Renicing $name"
+    my_renice $(pgrep -f "bash.*$name")
+    exit
+    ;;
+esac
 
 # Get the environment setup
 pushd $PREFIX
