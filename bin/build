@@ -25,7 +25,7 @@ function my_build(){
   # Make depending on target
   case $target in
     # Just build the kernel
-    selinux)
+    kernel)
       pushd $PREFIX/kernel/goldfish
       my_make ARCH=arm goldfish_armv7_defconfig
       my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
@@ -33,15 +33,8 @@ function my_build(){
       ;;
     # Build everything we should need for SEAndroid
     seandroid)
-      my_build selinux
+      my_build kernel
       my_build droid
-      ;;
-    # Build the tools we'll need
-    tools)
-      for t in adb emulator
-      do
-        my_build $t
-      done
       ;;
     # Update the policy and systemimage
     policy)
@@ -51,10 +44,62 @@ function my_build(){
       # Until then we have to rebuild droid
       my_build droid
       ;;
+    # Install the APKs
+    apks)
+      for apk in superuser sip openvpn
+      do
+        my_build $apk
+      done
+      
+      my_build root
+      ;;
+    superuser)
+      apk=com.noshufou.android.su
+      install_apk $apk
+      ;;
+    sip)
+      apk=com.csipsimple
+      install_apk $apk
+      ;;
+    openvpn)
+      apk=de.schaeuffelhut.android.openvpn
+      install_apk $apk
+
+      dest="/data/data/$apk"
+      echo "Adding confs to $dest"
+      adb push $APKSDIR/burns.ovpn $dest/client.ovpn
+      # TODO: Need to figure out how to label/restorecon for this file
+      ;;
+    # Root the device
+    root)
+      pushd $APKSDIR
+      adb shell mount -o rw,remount -t yaffs2 /dev/block/mtdblock03 /system
+      adb shell chmod 06755 /system
+
+      for i in su busybox openvpn; do push_binary $i; done
+
+      popd
+      ;;
     *)
       my_make -j4 HAVE_SELINUX=true $target
       ;;
   esac
+}
+
+function install_apk(){
+  apk=$1
+  file="$apk-1.apk" 
+  path="$APKSDIR/$file"
+  echo "Installing: $path"
+  adb install $path
+  adb shell restorecon /data/app/$file
+}
+
+function push_binary(){
+  dest=/system/xbin/$1
+  adb push $1 $dest
+  adb shell chmod 06755 $dest
+  adb shell restorecon $dest
 }
 
 function notify(){
@@ -91,6 +136,14 @@ case "$target" in
     name=$(which build)
     echo "Renicing $name"
     my_renice $(pgrep -f "bash.*$name")
+    exit
+    ;;
+  "apks")
+    my_build apks
+    exit
+    ;;
+  "root")
+    my_build root
     exit
     ;;
 esac
