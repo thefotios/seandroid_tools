@@ -1,14 +1,89 @@
 #!/usr/bin/env bash
 
 function usage(){
-  echo "Usage: $0 [kernel|selinux|userspace]"
+  echo "Usage: $0 [seandroid|selinux|userspace]"
   exit
 }
 
 [[ $# -eq 0 ]] && usage
 
+# Wrapper around make functions
+function my_make(){
+  my_run "make ${@}"
+}
+
+function my_mm(){
+  my_run "mm ${@}"
+}
+
+# Run the make/mm function and make sure it passes or exit with a message
+function my_run(){
+  cmd="$@" 
+  $cmd
+  ret=$?
+  if [ $ret -ne 0 ]
+  then
+    echo "Failed while running: $cmd"
+    exit $ret
+  fi
+}
+
+function my_build(){
+  target=$1
+
+  # Make depending on target
+  case $target in
+    # Just build the kernel
+    selinux)
+      pushd $PREFIX/kernel/goldfish
+      my_make ARCH=arm goldfish_armv7_defconfig
+      my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+      popd
+      ;;
+    # Build everything we should need
+    seandroid)
+      #for t in selinux libfst libpng aapt sepolicy openssl tools opengl emulator_renderer emulator
+      for t in selinux
+      do
+        my_build $t
+      done
+#      my_build userspace
+      ;;
+    # Build the tools we'll need
+    tools)
+      for t in adb emulator
+      do
+        my_build $t
+      done
+      ;;
+    opengl)
+      for t in libOpenglCodecCommon libOpenglOsUtils libOpenglRender
+      do
+        my_make -j4 $XLIBS $t
+      done
+      ;;
+    # Update the policy and systemimage
+    policy)
+      my_build sepolicy 
+      build snod
+      ;;
+    # Wrappers for modules that need mm
+    libfst|libpng|aapt|openssl|adb|emulator)
+      my_mm -j4 $target
+      ;;
+    # Pass through others
+    *)
+      my_make -j4 HAVE_SELINUX=true $opts $target
+      ;;
+  esac
+}
+
+# Set up some variables
+#XLIBS="LOCAL_LDLIBS+='-lX11'"
+#THREADS="CFLAGS+='-pthread -lpthread'"
+#opts="$XLIBS $THREADS"
+
 target=$1
-logfile="${PWD}/out.log"
 
 # Get the environment setup
 pushd $PREFIX
@@ -16,36 +91,8 @@ source build/envsetup.sh
 setpaths
 lunch full-eng
 
-# Keep make options consistant across builds
-log=" 2>&1 | tee $logfile"
-function my_make(){
-  cmd="time make ${@} $log"
-  eval $cmd 
-}
+# Run the build and time it
+time my_build $target
 
-#make_opts="-j4 LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
-make_opts="LOCAL_LDLIBS+=-lX11 CFLAGS+='-pthreads'"
-# Make depending on target
-case $target in
-  kernel)
-    my_make droid
-    ;;
-  selinux)
-    pushd $PREFIX/kernel/goldfish
-    my_make ARCH=arm goldfish_armv7_defconfig
-    my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-    popd
-    ;;
-  userspace)
-    opts="HAVE_SELINUX=true $make_opts"
-    for t in aapt libfst ""
-    do
-      my_make $opts $t
-    done
-    ;;
-  *)
-    my_make $target
-    ;;
-esac
-
+# Return cleanly
 popd
