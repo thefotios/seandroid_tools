@@ -1,0 +1,25 @@
+From 3f61ecc996eb172a5edd1d5fbcdbd76ccd59c297 Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 03:28:25 -0400
+Subject: [PATCH] Fix for cstddef
+
+From: http://aleksmaus.blogspot.com/2012/05/bulding-aosp-on-ubuntu-1204.html
+---
+ include/gtest/internal/gtest-param-util.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/gtest/internal/gtest-param-util.h b/include/gtest/internal/gtest-param-util.h
+index 5559ab4..1c1d119 100644
+--- a/include/gtest/internal/gtest-param-util.h
++++ b/include/gtest/internal/gtest-param-util.h
+@@ -34,6 +34,7 @@
+ #ifndef GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_H_
+ #define GTEST_INCLUDE_GTEST_INTERNAL_GTEST_PARAM_UTIL_H_
+ 
++#include <cstddef>
+ #include <iterator>
+ #include <utility>
+ #include <vector>
+-- 
+1.7.7.6
+
