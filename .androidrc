@@ -26,3 +26,6 @@ export ANDROID_PRODUCT_OUT=$PREFIX/out/target/product/generic
 export EMULATOR_OPTIONS="-show-kernel -kernel $ANDROID_KERNEL -partition-size 500 -sysdir $ANDROID_PRODUCT_OUT"
 
 export PATCHDIR=$DIR/patches
+export APKSDIR=$DIR/APKs
+
+alias ggrep="grep -r --exclude-dir='man' --exclude-dir='.to_delete' --exclude-dir='log' --exclude-dir='.git' --exclude='*.swp' --exclude='*.obsolete'"
