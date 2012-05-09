@@ -1,0 +1,26 @@
+From 86ede71ef8c10fc37b5ba105f9c04b2a3b0399ae Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 02:52:11 -0400
+Subject: [PATCH] Fix for linker problem
+
+Found: http://stackoverflow.com/questions/9812632/loading-emulator-after-building-source
+---
+ libpp/format_output.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libpp/format_output.h b/libpp/format_output.h
+index b6c4592..8e527d5 100644
+--- a/libpp/format_output.h
++++ b/libpp/format_output.h
+@@ -91,7 +91,7 @@ protected:
+ 		symbol_entry const & symbol;
+ 		sample_entry const & sample;
+ 		size_t pclass;
+-		mutable counts_t & counts;
++		counts_t & counts;
+ 		extra_images const & extra;
+ 		double diff;
+ 	};
+-- 
+1.7.7.6
+

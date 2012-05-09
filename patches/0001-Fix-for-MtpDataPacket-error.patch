@@ -1,0 +1,35 @@
+From c59fb77e2fa4fbf1d503305bb87fb6cce94178cf Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 03:20:20 -0400
+Subject: [PATCH] Fix for MtpDataPacket error
+
+From: https://groups.google.com/d/msg/android-building/WBL7H5IA1_4/5r_6R1vWie8J
+---
+ media/mtp/Android.mk |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/media/mtp/Android.mk b/media/mtp/Android.mk
+index e590bab..be788df 100644
+--- a/media/mtp/Android.mk
++++ b/media/mtp/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_SRC_FILES:=                                       \
+ 
+ LOCAL_MODULE:= libmtp
+ 
+-LOCAL_CFLAGS := -DMTP_DEVICE -DMTP_HOST
++LOCAL_CFLAGS := -isystem prebuilt/linux-x86/toolchain/i686-linux-glibc2.7-4.4.3/sysroot/usr/include -DMTP_DEVICE -DMTP_HOST
+ 
+ LOCAL_SHARED_LIBRARIES := libutils libcutils libusbhost libbinder
+ 
+@@ -65,7 +65,7 @@ LOCAL_SRC_FILES:=                                       \
+ 
+ LOCAL_MODULE:= libmtp
+ 
+-LOCAL_CFLAGS := -DMTP_HOST
++LOCAL_CFLAGS := -isystem prebuilt/linux-x86/toolchain/i686-linux-glibc2.7-4.4.3/sysroot/usr/include -DMTP_HOST
+ 
+ include $(BUILD_HOST_STATIC_LIBRARY)
+ 
+-- 
+1.7.7.6
+

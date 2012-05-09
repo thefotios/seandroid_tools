@@ -4,9 +4,19 @@
 pushd $PREFIX/external/mesa3d
 git fetch https://android.googlesource.com/platform/external/mesa3d \
   refs/changes/30/34930/1 && git cherry-pick FETCH_HEAD
-git apply "$PATCHDIR/0001-Fix-from-http-code.google.com-p-android-issues-detai.patch"
 popd
 
-pushd $PREFIX/development
-git apply "$PATCHDIR/0001-Fix-for-LDLIBS-in-Fedora.patch"
-popd
+# Function for quickly git applying
+function ga(){
+  dir="$PREFIX/$1"
+  patch="$PATCHDIR/$2"
+
+  pushd $dir
+  git apply $patch
+  popd
+}
+
+ga "external/mesa3d" "0001-Fix-from-http-code.google.com-p-android-issues-detai.patch"
+ga "development" "0001-Fix-for-LDLIBS-in-Fedora.patch"
+ga "external/oprofile" "0001-Fix-for-linker-problem.patch"
+ga "frameworks/base" "0001-Fix-for-MtpDataPacket-error.patch"
