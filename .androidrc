@@ -9,10 +9,11 @@ export USE_CCACHE=1
 export CCACHE_DIR=$DIR/.ccache
 
 export PREFIX=$DIR/seandroid-current
+export ANDROID_BINDIR=$DIR/bin
 
 # Set the path if it hasn't been set yet
 if [ -z "$ANDROID_SDK_HOME" ]; then 
-  PATH=$PATH:$DIR/bin:$PREFIX/out/host/linux-x86/bin:$SDK:$SDK/tools:$SDK/platform-tools; 
+  PATH=$PATH:$ANDROID_BINDIR:$PREFIX/out/host/linux-x86/bin:$SDK:$SDK/tools:$SDK/platform-tools; 
   export PATH;
 fi
 
@@ -23,3 +24,5 @@ export ANDROID_KERNEL=$PREFIX/kernel/goldfish/arch/arm/boot/zImage
 export ANDROID_PRODUCT_OUT=$PREFIX/out/target/product/generic
 
 export EMULATOR_OPTIONS="-show-kernel -kernel $ANDROID_KERNEL -partition-size 500 -sysdir $ANDROID_PRODUCT_OUT"
+
+export PATCHDIR=$DIR/patches

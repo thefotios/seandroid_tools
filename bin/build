@@ -24,7 +24,7 @@ function my_run(){
   if [ $ret -ne 0 ]
   then
     echo "Failed while running: $cmd"
-    exit $ret
+    notify "Failed" $ret
   fi
 }
 
@@ -40,26 +40,16 @@ function my_build(){
       my_make ARCH=arm CROSS_COMPILE=$PREFIX/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
       popd
       ;;
-    # Build everything we should need
+    # Build everything we should need for SEAndroid
     seandroid)
-      #for t in selinux libfst libpng aapt sepolicy openssl tools opengl emulator_renderer emulator
-      for t in selinux
-      do
-        my_build $t
-      done
-#      my_build userspace
+      my_build selinux
+      my_build droid
       ;;
     # Build the tools we'll need
     tools)
       for t in adb emulator
       do
         my_build $t
-      done
-      ;;
-    opengl)
-      for t in libOpenglCodecCommon libOpenglOsUtils libOpenglRender
-      do
-        my_make -j4 $XLIBS $t
       done
       ;;
     # Update the policy and systemimage
@@ -71,12 +61,22 @@ function my_build(){
     libfst|libpng|aapt|openssl|adb|emulator)
       my_mm -j4 $target
       ;;
-    # Pass through others
     *)
       my_make -j4 HAVE_SELINUX=true $opts $target
       ;;
   esac
 }
+
+function notify(){
+  status="critical"
+  if [[ -z $2 ]]; then status="normal"; fi
+  notify-send -u $status -i "$NOTIFY_IMG" $1 "Building $target" & paplay $NOTIFY_SOUND
+  exit 
+}
+
+NOTIFY_IMG="$ANDROID_BINDIR/android.png"
+NOTIFY_SOUND="/usr/share/sounds/KDE-Im-Internal-Error.ogg"
+
 
 # Set up some variables
 #XLIBS="LOCAL_LDLIBS+='-lX11'"
@@ -96,3 +96,5 @@ time my_build $target
 
 # Return cleanly
 popd
+
+notify "Success!"
