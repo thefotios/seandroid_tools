@@ -1,0 +1,80 @@
+From 6ca9866ff2efaf68276c40f4f7f6513f3d2843c6 Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 16:19:54 -0400
+Subject: [PATCH] SELinux settings for OpenVPN
+
+---
+ app.te         |   14 ++++++++++++++
+ device.te      |    1 +
+ file_contexts  |    3 +++
+ seapp_contexts |    2 ++
+ 4 files changed, 20 insertions(+), 0 deletions(-)
+
+diff --git a/app.te b/app.te
+index 7e06c10..18b48cb 100644
+--- a/app.te
++++ b/app.te
+@@ -38,6 +38,20 @@ app_domain(browser_app)
+ # Access the network.
+ net_domain(browser_app)
+ 
++type openvpn_app, domain;
++app_domain(openvpn_app)
++net_domain(openvpn_app)
++
++allow openvpn_app app_data_file:dir { remove_name search open add_name };
++allow openvpn_app app_data_file:file open;
++allow openvpn_app sdcard:dir { read search open };
++allow openvpn_app sdcard:file { read getattr open };
++allow openvpn_app self:capability { setuid net_raw setgid net_admin dac_override };
++allow openvpn_app shell_exec:file { read execute open execute_no_trans };
++allow openvpn_app su_exec:file { read execute open execute_no_trans };
++allow openvpn_app system_file:file execute_no_trans;
++allow openvpn_app tun_device:chr_file { read write ioctl open };
++
+ #
+ # Untrusted apps.
+ #
+diff --git a/device.te b/device.te
+index 6424db6..e52b74c 100644
+--- a/device.te
++++ b/device.te
+@@ -37,3 +37,4 @@ type urandom_device, dev_type;
+ type video_device, dev_type;
+ type vcs_device, dev_type;
+ type zero_device, dev_type;
++type tun_device, dev_type;
+diff --git a/file_contexts b/file_contexts
+index c610df3..364c82d 100644
+--- a/file_contexts
++++ b/file_contexts
+@@ -74,6 +74,7 @@
+ /dev/vcs[0-9a-z]*	u:object_r:vcs_device:s0
+ /dev/video[0-9]*	u:object_r:video_device:s0
+ /dev/zero		u:object_r:zero_device:s0
++/dev/tun    u:object_r:tun_device:s0
+ #############################
+ # System files
+ #
+@@ -98,6 +99,8 @@
+ /system/bin/qemud	u:object_r:qemud_exec:s0
+ /system/xbin/su		u:object_r:su_exec:s0
+ /system/vendor/bin/gpsd u:object_r:gpsd_exec:s0
++
++/system/xbin/openvpn  u:object_r:openvpn_exec:s0
+ #############################
+ # Data files
+ #
+diff --git a/seapp_contexts b/seapp_contexts
+index c301792..6049e6d 100644
+--- a/seapp_contexts
++++ b/seapp_contexts
+@@ -35,3 +35,5 @@ user=radio domain=radio type=radio_data_file
+ user=app_* domain=untrusted_app type=app_data_file levelFromUid=true
+ user=app_* seinfo=systemApp domain=trusted_app levelFromUid=true
+ user=app_* seinfo=systemApp name=com.android.browser domain=browser_app levelFromUid=true
++
++user=app_* type=app_data_file name=de.schaeuffelhut.android.openvpn domain=openvpn_app levelFromUid=true
+-- 
+1.7.7.6
+
