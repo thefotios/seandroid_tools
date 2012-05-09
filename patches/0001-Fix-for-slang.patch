@@ -1,0 +1,26 @@
+From 714e553726dee5d6b21bf8d3107d45f37ddd3b6c Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 09:57:44 -0400
+Subject: [PATCH] Fix for slang
+
+From: http://aleksmaus.blogspot.com/2012/05/bulding-aosp-on-ubuntu-1204.html
+---
+ slang_rs_export_foreach.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/slang_rs_export_foreach.cpp b/slang_rs_export_foreach.cpp
+index a4025ca..c928c54 100644
+--- a/slang_rs_export_foreach.cpp
++++ b/slang_rs_export_foreach.cpp
+@@ -246,7 +246,7 @@ RSExportForEach *RSExportForEach::Create(RSContext *Context,
+                                     clang::SourceLocation(),
+                                     &Ctx.Idents.get(Id));
+ 
+-      llvm::StringRef ParamName = PVD->getName();
++      // llvm::StringRef ParamName = PVD->getName();
+       clang::FieldDecl *FD =
+           clang::FieldDecl::Create(Ctx,
+                                    RD,
+-- 
+1.7.7.6
+
