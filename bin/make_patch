@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+git format-patch -1 -b --relative -o $PATCHDIR

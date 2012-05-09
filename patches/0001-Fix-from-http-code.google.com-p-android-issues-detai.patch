@@ -1,0 +1,25 @@
+From 44fc2a8a417ca7dd9cadfe9f9d2782fde0e007ca Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 01:35:10 -0400
+Subject: [PATCH] Fix from
+ http://code.google.com/p/android/issues/detail?id=23206#c12
+
+---
+ src/glsl/linker.cpp |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/src/glsl/linker.cpp b/src/glsl/linker.cpp
+index f8b6962..03aaa82 100644
+--- a/src/glsl/linker.cpp
++++ b/src/glsl/linker.cpp
+@@ -63,6 +63,7 @@
+  *
+  * \author Ian Romanick <ian.d.romanick@intel.com>
+  */
++#include <stddef.h>
+ #include <cstdlib>
+ #include <cstdio>
+ #include <cstdarg>
+-- 
+1.7.7.6
+

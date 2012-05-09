@@ -1,0 +1,24 @@
+From fb2d3208aa45dc1232e020b9cff881c6977b61c9 Mon Sep 17 00:00:00 2001
+From: Fotios Lindiakos <fotioslindiakos@gmail.com>
+Date: Wed, 9 May 2012 01:38:50 -0400
+Subject: [PATCH] Fix for LDLIBS in Fedora
+
+---
+ tools/emulator/opengl/host/renderer/Android.mk |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/tools/emulator/opengl/host/renderer/Android.mk b/tools/emulator/opengl/host/renderer/Android.mk
+index 55fcb80..6c62537 100644
+--- a/tools/emulator/opengl/host/renderer/Android.mk
++++ b/tools/emulator/opengl/host/renderer/Android.mk
+@@ -5,6 +5,7 @@ $(call emugl-begin-host-executable,emulator_renderer)
+ $(call emugl-import,libOpenglRender)
+ LOCAL_SRC_FILES := main.cpp
+ LOCAL_CFLAGS    += -O0 -g
++LOCAL_LDLIBS    += -lX11
+ 
+ #ifeq ($(HOST_OS),windows)
+ #LOCAL_LDLIBS += -lws2_32
+-- 
+1.7.7.6
+
