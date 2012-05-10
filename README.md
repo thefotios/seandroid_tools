@@ -1,6 +1,12 @@
 # Purpose #
 This project contains some scripts that are attemptimg to make building and testing [SEAndroid][seandroid] as painless as possible.
 
+# Our presentation #
+The presentation Burns and I put together for our class.
+This covers a little bit about SELinux, SEAndroid, and what we did.
+
+[Hosted on OpenShift](http://isa673-fotios.rhcloud.com)
+
 # Goal #
 I want these scripts to be able to cover the entire build process from 
 
@@ -22,8 +28,6 @@ I want these scripts to be able to cover the entire build process from
 * [Aleks Maus' Blog](http://aleksmaus.blogspot.com/2012/05/bulding-aosp-on-ubuntu-1204.html)
 * [Al Sutton's Google+ Post](https://plus.google.com/113331808607528811927/posts/gDuDeGfVWQP)
 
-# TODO #
-* Add function to renice build and all children [ref](http://www.askdavetaylor.com/how_do_i_find_all_child_processes_in_unix.html)
 
 [seandroid]: http://selinuxproject.org/page/SEAndroido
 
