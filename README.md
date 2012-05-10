@@ -29,5 +29,5 @@ I want these scripts to be able to cover the entire build process from
 * [Al Sutton's Google+ Post](https://plus.google.com/113331808607528811927/posts/gDuDeGfVWQP)
 
 
-[seandroid]: http://selinuxproject.org/page/SEAndroido
+[seandroid]: http://selinuxproject.org/page/SEAndroid
 
