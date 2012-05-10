@@ -23,7 +23,7 @@ export ANDROID_KERNEL=$PREFIX/kernel/goldfish/arch/arm/boot/zImage
 
 export ANDROID_PRODUCT_OUT=$PREFIX/out/target/product/generic
 
-export EMULATOR_OPTIONS="-show-kernel -kernel $ANDROID_KERNEL -partition-size 500 -sysdir $ANDROID_PRODUCT_OUT"
+export EMULATOR_OPTIONS="-show-kernel -kernel $ANDROID_KERNEL -partition-size 500 -sysdir $ANDROID_PRODUCT_OUT -sdcard $ANDROID_PRODUCT_OUT/sdcard.img"
 
 export PATCHDIR=$DIR/patches
 export APKSDIR=$DIR/APKs

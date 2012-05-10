@@ -65,14 +65,17 @@ function my_build(){
       apk=de.schaeuffelhut.android.openvpn
       install_apk $apk
 
-      dest="/data/data/$apk"
-      echo "Adding confs to $dest"
-      adb push $APKSDIR/burns.ovpn $dest/client.ovpn
-      # TODO: Need to figure out how to label/restorecon for this file
+            # TODO: Need to figure out how to label/restorecon for this file
       ;;
     # Root the device
     root)
       pushd $APKSDIR
+
+      dest="/sdcard/openvpn"
+      echo "Adding confs to $dest"
+      adb shell mkdir $dest
+      adb push client.ovpn $dest/client.ovpn
+
       adb shell mount -o rw,remount -t yaffs2 /dev/block/mtdblock03 /system
       adb shell chmod 06755 /system
 
